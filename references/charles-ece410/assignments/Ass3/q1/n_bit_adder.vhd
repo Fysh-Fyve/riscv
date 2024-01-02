@@ -1,0 +1,13 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+
+ENTITY n_bit_adder IS
+	GENERIC (N : NATURAL);
+	PORT (
+		a : IN STD_LOGIC_VECTOR (N - 1 DOWNTO 0);
+		b : IN STD_LOGIC_VECTOR (N - 1 DOWNTO 0);
+		c_in : IN STD_LOGIC;
+		sum : OUT STD_LOGIC_VECTOR (N - 1 DOWNTO 0);
+		c_out : OUT STD_LOGIC
+	);
+END n_bit_adder;

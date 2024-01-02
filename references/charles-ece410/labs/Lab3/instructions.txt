@@ -1,0 +1,57 @@
+DATED: November 2, 2021
+Created by: Shyama Gandhi
+-----------------------------------------------
+
+First, just start by adding the following files in the vivado project:
+
+mux4.vhd, accum.vhd, reg_file.vhd, alu.vhd and tristatebuffer.vhd
+datapath.vhd
+
+Finish the code in all these files first. You can get an idea of how to work on the above files using the Fig.3 of the manual and the explanation inside the lab manual related to the datapath components.
+
+NEXT,
+
+Add the controller.vhd file in your vivado project.
+Follow the commented explanations in this file and start working on it. Side by side, even read the lab manual as you proceed to understand the controller working.
+
+Once you are done with controller.vhd, you know have the design ready for controller and datapath. Your next job is to connect the controller.vhd and datapath.vhd file.
+This is done by cpu_ctrl_dp.vhd file. Add this file to your project now.
+This file has component instantiation for controller and datapath and now you connect various input and output signals between the controller and the datapath.
+
+Once you are done with this file, it is time to simulate your design.
+
+Add the testbench file, cpu_core_tb.vhd in your project. Once you have finished writing the test bench, "Run Simulation" and verify the working of your design and make sure it is correct.
+Consult the TA/LI in your section to verify it or if you have any questions.
+
+-----------------------------
+
+Now, add the following three files in your design:
+topmodule.vhd,
+clk_divider.vhd,
+sev_segment.vhd
+
+Please make sure to write the code in the commented section of topmodule.vhd and sev_segment.vhd files.
+clk_divider.vhd file does not require any modifications and it is exactly the file you use in previous labs.
+
+Once done, look at the source hierarchy now! Amazing, right!
+Your topmodule.vhd file now contains your entire CPU that works at the divided clock and is connected to the seven-segment display for showing the Program Counter (PC).
+
+------------------------------
+
+Now, it is time to add the .xdc file.
+Get the .xdc file format from the previous labs.
+
+Following mapping requirements must be satisfied in this file! 
+(Map the ports based on the entity nomenclature of the "topmodule.vhd" file)
+The below-mentioned names are for understanding purposes only.
+- clk
+- reset 
+- OPcode is to be shown on 4 white LEDs.
+- the done signal can be shown on RGB led
+- Map the seven segment (6:0) and the cathode selection signal on JC and JD header. (Seven segment shows PC)
+- You will be taking input from the user i.e., 3 bits input (it is scaled to 8 bits by adding zeros "00000xxx" (refer "topmodule.vhd" file))
+- Map the "entered_input" signal (this signal is used to tell the CPU that it can now start working. refer to "Fetch" state in controller.vhd, unless and until this signal is '0', your controller FSM won't come out of the "Fetch" state).
+
+------------------------------
+
+Now, Synthesis, Implement, and Generate the bitstream.

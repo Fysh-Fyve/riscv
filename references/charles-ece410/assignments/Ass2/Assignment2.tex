@@ -1,0 +1,291 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with`a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{csquotes} % for quotes
+
+\usepackage{minted} % for code
+
+\title{ECE 410 Assignment 2}
+\date{October 9, 2021}
+\author{Charles Ancheta, 1581672}
+
+\begin{document}
+\maketitle
+
+\section{Component vs Component Instance}
+
+\begin{displayquote}
+In VHDL, briefly describe what a "component" object is and what a "component instance" is. In your descriptions, be sure to explain the main purpose and advantage of each concept in a VHDL specification. What are the similarities and differences between the two concepts?
+\end{displayquote}
+
+A component instance is a copy of an entity, and is a representation of a part in the model. This is connected with other parts and signals through wires. Its main purpose is abstracting the implementation of a sub-device away and focusing on the higher-level details of the whole architecture.
+
+A component describes the interface for an entity that will be instantiated as a component instance. This is free of any specific architecture (implementation) and the architecture is determined later at compile-time. Its main purpose is to define the interface of a sub-block ahead of time and worrying about the implementation of that sub-block later.
+
+The two are similar in a way that they describe a part of a device. You can think of a component as the blueprint for a part while a component instance is the part itself.
+
+\section{quark\_t Scalar Type Definition}
+
+\begin{displayquote}
+Give a VHDL statement that defines a new scalar type, quark\_t, for the six kinds of subatomic particles called quarks, namely: up, down, charm, strange, top and bottom (in that order). As well as the attributes for scalar types that were introduced on slide 4-16, VHDL provides additional attributes for discrete scalar types. Consult reputable documentation and state the result of the following attribute expressions: \\
+(a) quark\_t'pos(strange), \\
+(b) quark\_t'val(1), \\
+(c) quark\_t'succ(charm),  \\
+(d) quark\_t'pred(bottom),  \\
+(e) quark\_t'leftof(top), and  \\
+(f) quark\_t'rightof(down).
+\end{displayquote}
+
+\begin{minted}{vhdl}
+TYPE quark_t IS (up, down, charm, strange, top, bottom);
+\end{minted} 
+(a) \texttt{quark\_t'pos(strange) = 3} \\
+(b) \texttt{quark\_t'val(1) = down} \\
+(c) \texttt{quark\_t'succ(charm) = strange} \\
+(d) \texttt{quark\_t'pred(bottom) = top} \\
+(e) \texttt{quark\_t'leftof(top) = strange} \\
+(f) \texttt{quark\_t'rightof(down) = charm}
+
+\section{Meaning of STD\_ULOGIC values}
+
+\begin{displayquote}
+In your own words, briefly describe the meaning of the \texttt{std\_ulogic} values 'U', 'X', 'W', 'Z' and '-'. Then justify how each of these values is resolved with the full list of nine values from \texttt{std\_ulogic} in the IEEE \texttt{resolution\_table}.
+\end{displayquote} 
+'U' : Uninitialized value. \\
+'X' : Forced unknown. Usually happens when the value is set to 0 and 1 simultaneously. \\ 
+'W' : Weak unknown. Usually happens when the value is set to H and L simultaneously. \\
+'Z' : Cut off. This is a floating value. \\
+'-' : Impossible state.
+
+\begin{minted}{vhdl}
+constant resolution_table : stdlogic_table := (
+--------------------------------------------------------------
+--'U'  'X'  '0'  '1'  'Z'  'W'  'L'  'H'  '-'
+--------------------------------------------------------------
+( 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U' ), -- 'U'
+( 'U', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X' ), -- 'X'
+( 'U', 'X', '0', 'X', '0', '0', '0', '0', 'X' ), -- '0'
+( 'U', 'X', 'X', '1', '1', '1', '1', '1', 'X' ), -- '1'
+( 'U', 'X', '0', '1', 'Z', 'W', 'L', 'H', 'X' ), -- 'Z'
+( 'U', 'X', '0', '1', 'W', 'W', 'W', 'W', 'X' ), -- 'W'
+( 'U', 'X', '0', '1', 'L', 'W', 'L', 'W', 'X' ), -- 'L'
+( 'U', 'X', '0', '1', 'H', 'W', 'W', 'H', 'X' ), -- 'H'
+( 'U', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X' )  -- '-'
+);
+\end{minted} 
+'U' : Since the value is uninitialized and is completely random and unknown, the value should not be trusted and kept uninitialized until it's forced to a real, known value. \\
+'X' : Same as U, but U would take precedence. Even though this value is forced, it is still completely unknown. \\
+'Z' : Since this is cut off, once it makes contact it will just be resolved to any other connected value. \\
+'W' : Since it is unknown, it will resolve any weak signal into a weak unknown. However, since it is weak, it will be resolved to any strong signal. \\
+'-' : This is an impossible value, or at least something that is not used, so it can be resolved to any random value (forced unknown). \\
+
+\section{Generic N-bit barrel shifter}
+
+\begin{displayquote}
+In Question 5 of Assignment \#1 you were asked to design an 8-bit barrel shifter that received an 8-bit input operand D\_IN and then right-rotates that operand by a given bit distance of ROT to produce the 8-bit output D\_OUT. You are now to generalize that design using a VDHL generic so that it handles input operands ranging in width from 2 bits up to 128 bits. Your solution is to contain \\
+(a) the entity for your design, \\ 
+(b) the architecture for that entity, and \\
+(c) an example of how the entity could be instantiated to accommodate a D\_IN  of width 32.
+\end{displayquote}
+
+(a) \texttt{barrel\_shifter} entity
+
+\begin{minted}{vhdl}
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.MATH_REAL.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+ENTITY barrel_shifter IS GENERIC (WID : INTEGER RANGE 2 TO 128);
+    PORT ( d_in : IN STD_LOGIC_VECTOR (WID - 1 DOWNTO 0);
+           d_out : OUT STD_LOGIC_VECTOR (WID - 1 DOWNTO 0);
+           rot : IN STD_LOGIC_VECTOR (INTEGER(ceil(log2((real(WID))))) - 1 DOWNTO 0));
+END barrel_shifter;
+\end{minted} 
+\newpage
+(b) \texttt{barrel\_shifter} architecture
+
+\begin{minted}{vhdl}
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.MATH_REAL.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+ARCHITECTURE Behavioral OF barrel_shifter IS
+    FUNCTION r_shift(d_in : IN STD_LOGIC_VECTOR(WID - 1 DOWNTO 0); rot : IN INTEGER)
+        RETURN STD_LOGIC_VECTOR IS
+        VARIABLE d_out : STD_LOGIC_VECTOR(WID - 1 DOWNTO 0);
+    BEGIN
+        d_out := d_in;
+        FOR I IN 0 TO rot - 1 LOOP
+            d_out := d_out(0) & d_out(WID - 1 DOWNTO 1);
+        END LOOP;
+        RETURN d_out;
+    END FUNCTION r_shift;
+BEGIN
+    d_out <= r_shift(d_in, to_integer(unsigned(rot)));
+END Behavioral;
+\end{minted} 
+
+(c) \texttt{barrel\_shifter} 32-bit example
+
+\begin{minted}{vhdl}
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+ENTITY barrel_shifter_32_bit_example IS
+END barrel_shifter_32_bit_example;
+
+ARCHITECTURE Behavioral OF barrel_shifter_32_bit_example IS
+    SIGNAL d_in : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL d_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL rot : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    COMPONENT barrel_shifter IS
+        GENERIC (WID : INTEGER RANGE 2 TO 128);
+        PORT (d_in : IN STD_LOGIC_VECTOR (WID - 1 DOWNTO 0);
+            d_out : OUT STD_LOGIC_VECTOR (WID - 1 DOWNTO 0);
+            rot : IN STD_LOGIC_VECTOR (INTEGER(ceil(log2((real(WID))))) - 1 DOWNTO 0));
+    END COMPONENT;
+BEGIN
+    shifter : barrel_shifter GENERIC MAP(WID => 32)
+    PORT MAP(d_in => d_in, d_out => d_out, rot => rot);
+
+    shifter_testing : PROCESS
+    BEGIN
+        d_in <= "00000000000000001111111111111111";
+        FOR I IN 0 TO 31 LOOP
+            rot <= STD_LOGIC_VECTOR(to_unsigned(I, rot'length));
+            WAIT FOR 5 ns;
+        END LOOP;
+        WAIT;
+    END PROCESS;
+END Behavioral;
+\end{minted} 
+
+\section{Timing Specifiers in Synthesis Software}
+
+\begin{displayquote}
+Briefly explain why synthesis software for VHDL ignores any timing specifiers in signal assignment statements. If those specifiers are ignored when the hardware design is being specified, why would one use timing specifiers at all in a VHDL specification, either before or after the design has been synthesized to a hardware implementation?
+\end{displayquote}
+
+Synthesis software for VHDL ignores any timing specifiers in signal assignment statements because it has no way to guarantee that that delay will occur in the target hardware. However, timing specifiers are still useful when creating the simulation model.
+
+\section{Resizeable 3-input Operand Binary Adder}
+
+\begin{displayquote}
+Design a behavioural-level model of a resizeable three-input-operand binary adder whose width is specified using a generic called WID. All three input arguments (a, b and c) are to be of type std\_logic\_vector(WID-1 downto 0). The carry-in bit at the least significant position is to be assumed to have value 0. The output of the adder, called sum, is to be of type std\_logic\_vector(WID+1 downto 0). The inputs and outputs can all be assumed to be unsigned integers, where the most significant bit position is a magnitude bit and not a sign bit. Your architecture must use a VHDL loop construct that iterates over the bits of the input operands, going from the least significant bit position (index 0) up to the most significant bit position (WID-1) of the three input operands.
+\end{displayquote}
+
+To implement this purely using combinational logic, we need to keep track of two
+carry bits.  
+The carry bits for the next operation are then evaluated using a half-adder.
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{||c|c|c|c||} 
+ \hline
+ \multirow{2}{*}{$C_{in0}ABC$} & \multirow{2}{*}{Sum} & \multicolumn{2}{c||}{$C_{out}$} \\
+ \cline{3-4}
+  & & $C_{in1}$=0 & $C_{in1}$=1 \\ [0.5ex]
+ \hline\hline
+ 0000   & 0   & 00 & 01    \\
+ 0001   & 1   & 00 & 01    \\
+ 0010   & 1   & 00 & 01    \\
+ 0011   & 0   & 01 & 10    \\
+ 0100   & 1   & 00 & 01    \\
+ 0101   & 0   & 01 & 10    \\
+ 0110   & 0   & 01 & 10    \\
+ 0111   & 1   & 01 & 10    \\
+ 1000   & 1   & 00 & 01    \\
+ 1001   & 0   & 01 & 10    \\
+ 1010   & 0   & 01 & 10    \\
+ 1011   & 1   & 01 & 10    \\
+ 1100   & 0   & 01 & 10    \\
+ 1101   & 1   & 01 & 10    \\
+ 1110   & 1   & 01 & 10    \\
+ 1111   & 0   & 10 & 11    \\
+ \hline
+\end{tabular}
+\end{center}
+\caption{Truth table for a single bit in the 3-input operand binary adder.}
+\end{table}
+
+\begin{minted}{vhdl}
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+ENTITY adder IS GENERIC (WID : NATURAL);
+    PORT (a : IN STD_LOGIC_VECTOR (WID - 1 DOWNTO 0);
+          b : IN STD_LOGIC_VECTOR (WID - 1 DOWNTO 0);
+          c : IN STD_LOGIC_VECTOR (WID - 1 DOWNTO 0);
+          sum : OUT STD_LOGIC_VECTOR (WID + 1 DOWNTO 0));
+END adder;
+
+ARCHITECTURE Behavioral OF adder IS
+BEGIN
+    add : PROCESS (a, b, c)
+        VARIABLE c_in : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        VARIABLE c_out : STD_LOGIC_VECTOR(1 DOWNTO 0);
+        VARIABLE temp_carry : STD_LOGIC;
+    BEGIN
+        c_out := "00"; -- c_in is assumed to be 00
+        FOR i IN 0 TO WID - 1 LOOP
+            c_in := c_out; -- use carry from last bit operation
+            sum(i) <= a(i) XOR b(i) XOR c(i) XOR c_in(0);
+
+            temp_carry := (c_in(0) AND (a(i) XOR b(i)))
+                OR (c(i) AND (c_in(0) XOR a(i)))
+                OR (b(i) AND ((a(i) AND NOT c(i)) OR (NOT c_in(0) AND c(i))));
+
+            c_out(0) := temp_carry XOR c_in(1); -- half-add
+            c_out(1) := (temp_carry AND c_in(1))
+            -- 4 bits equal one MSB carry
+            OR (a(i) AND b(i) AND c(i) AND c_in(0));
+        END LOOP;
+
+        -- append any carry bits to the MSB of the sum
+        sum(WID + 1 DOWNTO WID) <= c_out;
+    END PROCESS;
+END Behavioral;
+\end{minted}
+
+\section{3-input Operand Binary adder using \texttt{IEEE.NUMERIC\_STD}}
+
+\begin{displayquote}
+Repeat question 6, but this time assume that the three input operands as well as the output sum are of type unsigned as defined in the IEEE package NUMERIC\_STD. Hint: This package is used in the up/down counter example on slide 4-60.
+\end{displayquote}
+
+\begin{minted}{vhdl}
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
+ENTITY adder_numeric IS GENERIC (WID : NATURAL);
+    PORT (a : IN UNSIGNED (WID - 1 DOWNTO 0);
+        b : IN UNSIGNED (WID - 1 DOWNTO 0);
+        c : IN UNSIGNED (WID - 1 DOWNTO 0);
+        sum : OUT UNSIGNED (WID + 1 DOWNTO 0));
+END adder_numeric;
+ARCHITECTURE Behavioral OF adder_numeric IS
+BEGIN
+    -- extend a, b, and c to match sum's length
+    sum <= ("00" & a) + ("00" & b) + ("00" & c);
+END Behavioral;
+\end{minted}
+
+
+\end{document}
