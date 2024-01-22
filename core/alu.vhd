@@ -6,25 +6,29 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 --! @endcond
 
--- Before I forget and have to scour Google for this again
--- https://nandland.com/common-vhdl-conversions/
+-- VHDL code for an Arithmetic Logic Unit (ALU).
+-- This ALU supports basic arithmetic and logical operations.
+-- It takes two 32-bit operands, a function code, and a control signal for subtraction or arithmetic right shift.
 
 entity alu is
   port (
-    a_i, b_i          : in  std_ulogic_vector (31 downto 0);
-    func_i            : in  std_ulogic_vector (2 downto 0);
-    sub_sra_i         : in  std_ulogic;
-    q_o               : out std_ulogic_vector (31 downto 0);
-    eq_o, lt_o, ltu_o : out std_ulogic);
+    operand_a, operand_b : in  std_ulogic_vector (31 downto 0);  -- 32-bit input operands
+    func_code            : in  std_ulogic_vector (2 downto 0);   -- 3-bit function code determining the operation
+    sub_or_sra           : in  std_ulogic;                       -- Control signal for subtraction/arithmetic right shift
+    result               : out std_ulogic_vector (31 downto 0);  -- 32-bit output result of the ALU
+    equal_flag,          -- Output flag for equality comparison
+    less_than_flag,      -- Output flag for signed less than comparison
+    less_than_unsigned_flag : out std_ulogic);                   -- Output flag for unsigned less than comparison
 end alu;
 
 architecture Behavioral of alu is
-  signal add              : signed (31 downto 0);
-  signal left_shifted     : std_ulogic_vector (31 downto 0);
-  signal right_shifted    : std_ulogic_vector (31 downto 0);
-  signal unsigned_shift_a : std_ulogic_vector (31 downto 0);
-  signal signed_shift_a   : std_ulogic_vector (31 downto 0);
+  signal addition_result          : signed (31 downto 0);            -- Signal for storing addition/subtraction result
+  signal left_shifted_result      : std_ulogic_vector (31 downto 0); -- Signal for storing left shift result
+  signal right_shifted_result     : std_ulogic_vector (31 downto 0); -- Signal for storing right shift result
+  signal unsigned_shift_operand_a : std_ulogic_vector (31 downto 0); -- Operand A for unsigned right shift
+  signal signed_shift_operand_a   : std_ulogic_vector (31 downto 0); -- Operand A for signed right shift
 
+  -- Function to compare two 32-bit unsigned numbers and return '1' if first is less than second
   function less_than_unsigned(
     a : std_ulogic_vector (31 downto 0);
     b : std_ulogic_vector (31 downto 0)) return std_ulogic is
@@ -33,24 +37,31 @@ architecture Behavioral of alu is
     lt := '1' when to_integer(unsigned(a(30 downto 0))) < to_integer(unsigned(b(30 downto 0))) else '0';
     return (not a(31) and b(31)) or (lt and (a(31) xnor b(31)));
   end function less_than_unsigned;
-begin
-  with func_i select q_o <=
-    a_i and b_i                when "111",
-    a_i or b_i                 when "110",
-    right_shifted              when "101",
-    a_i xor b_i                when "100",
-    x"0000000" & "000" & ltu_o when "011",
-    x"0000000" & "000" & lt_o  when "010",
-    left_shifted               when "001",
-    std_ulogic_vector(add)     when "000",
-    (others => 'X')            when others;
-  add              <= (signed(a_i) - signed(b_i)) when sub_sra_i else (signed(a_i) + signed(b_i));
-  left_shifted     <= std_ulogic_vector(shift_left(unsigned(a_i), to_integer(unsigned(b_i(4 downto 0)))));
-  right_shifted    <= signed_shift_a              when sub_sra_i else unsigned_shift_a;
-  unsigned_shift_a <= std_ulogic_vector(shift_right(unsigned(a_i), to_integer(unsigned(b_i(4 downto 0)))));
-  signed_shift_a   <= std_ulogic_vector(shift_right(signed(a_i), to_integer(unsigned(b_i(4 downto 0)))));
 
-  eq_o  <= and (a_i xnor b_i);
-  lt_o  <= '1' when to_integer(signed(a_i)) < to_integer(signed(b_i)) else '0';
-  ltu_o <= less_than_unsigned(a_i, b_i);
+begin
+  -- Multiplexer for selecting the operation based on function code
+  with func_code select result <=
+    operand_a and operand_b                when "111",
+    operand_a or operand_b                 when "110",
+    right_shifted_result                   when "101",
+    operand_a xor operand_b                when "100",
+    x"0000000" & "000" & less_than_unsigned_flag when "011",
+    x"0000000" & "000" & less_than_flag    when "010",
+    left_shifted_result                    when "001",
+    std_ulogic_vector(addition_result)     when "000",
+    (others => 'X')                        when others;
+
+  -- Compute addition or subtraction based on sub_or_sra signal
+  addition_result  <= (signed(operand_a) - signed(operand_b)) when sub_or_sra else (signed(operand_a) + signed(operand_b));
+  
+  -- Shift operations
+  left_shifted_result  <= std_ulogic_vector(shift_left(unsigned(operand_a), to_integer(unsigned(operand_b(4 downto 0)))));
+  right_shifted_result <= signed_shift_operand_a when sub_or_sra else unsigned_shift_operand_a;
+  unsigned_shift_operand_a <= std_ulogic_vector(shift_right(unsigned(operand_a), to_integer(unsigned(operand_b(4 downto 0)))));
+  signed_shift_operand_a   <= std_ulogic_vector(shift_right(signed(operand_a), to_integer(unsigned(operand_b(4 downto 0)))));
+
+  -- Flags for comparison results
+  equal_flag  <= and (operand_a xnor operand_b);
+  less_than_flag  <= '1' when to_integer(signed(operand_a)) < to_integer(signed(operand_b)) else '0';
+  less_than_unsigned_flag <= less_than_unsigned(operand_a, operand_b);
 end Behavioral;
