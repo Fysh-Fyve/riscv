@@ -18,22 +18,14 @@ use work.alu_operations.all;
 --! xor, and signed and unsigned comparisons.
 entity alu is
   port (
-    --! First operand in the ALU.
-    operand_a_i               : in  std_ulogic_vector (31 downto 0);
-    --! Second operand in the ALU.
-    operand_b_i               : in  std_ulogic_vector (31 downto 0);
-    --! Determines the operation to perform.
-    op_bits_i                 : in  std_ulogic_vector (2 downto 0);
-    --! Modifies the ADD and SHIFT_RIGHT operations.\n ADD becomes SUB, SHIFT_RIGHT changes from logical to arithmetic shift.
-    add_shift_modify_flag_i   : in  std_ulogic;
-    --! Result of the ALU.
+  
+    operand_a_i, operand_b_i  : in  std_ulogic_vector (31 downto 0); --! input operands
+    op_bits_i                 : in  std_ulogic_vector (2 downto 0); --! Determines the operation to perform.
+    sub_sra_i                 : in  std_ulogic; --! Control signal for subtraction/arithmetic right shift
     alu_result_o              : out std_ulogic_vector (31 downto 0);
-    --! Set if `operand_a_i` == `operand_b_i`.
-    equal_flag_o              : out std_ulogic;
-    --! Set if `operand_a_i` < `operand_b_i` as signed 32-bit integers.
-    less_than_flag_o          : out std_ulogic;
-    --! Set if `operand_a_i` < `operand_b_i` as unsigned 32-bit integers.
-    less_than_unsigned_flag_o : out std_ulogic);
+    equal_flag_o              : out std_ulogic; --! `operand_a_i` == `operand_b_i`.
+    less_than_flag_o          : out std_ulogic; --! `operand_a_i` < `operand_b_i`
+    less_than_unsigned_flag_o : out std_ulogic); --! `operand_a_i` < `operand_b_i`
 end alu;
 
 
@@ -88,7 +80,7 @@ begin
     (others => 'X')                         when others;
 
   add_sub_result <= (signed(operand_a_i) - signed(operand_b_i))
-                    when add_shift_modify_flag_i
+                    when sub_sra_i
                     else (signed(operand_a_i) + signed(operand_b_i));
 
   left_shifted <= std_ulogic_vector(
@@ -97,7 +89,7 @@ begin
       to_integer(unsigned(operand_b_i(4 downto 0)))));
 
   right_shifted <= signed_shift_a
-                   when add_shift_modify_flag_i
+                   when sub_sra_i
                    else unsigned_shift_a;
 
   unsigned_shift_a <= std_ulogic_vector(
