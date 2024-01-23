@@ -60,7 +60,11 @@ architecture Behavioral of alu is
     a : std_ulogic_vector (31 downto 0);
     b : std_ulogic_vector (31 downto 0)) return std_ulogic is
   begin
-    return '1' when to_integer(signed(a)) < to_integer(signed(b)) else '0';
+      if to_integer(signed(a)) < to_integer(signed(b)) then
+        return '1';
+      else
+        return '0';
+      end if;
   end function less_than_signed;
 
 
