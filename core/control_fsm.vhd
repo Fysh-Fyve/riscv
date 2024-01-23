@@ -28,12 +28,15 @@ entity control_fsm is
 end control_fsm;
 
 architecture Behavioral of control_fsm is
+signal pc_clk, ir_clk : std_ulogic := '0';
 begin
   drive_clock : process(clk_i)
   begin
     if rising_edge(clk_i) then
-      pc_clk_o <= not pc_clk_o;
-      ir_clk_o <= not ir_clk_o;
+      pc_clk   <= not pc_clk;
+      ir_clk   <= not ir_clk;
     end if;
+    pc_clk_o <= pc_clk;
+    ir_clk_o <= ir_clk;
   end process drive_clock;
 end Behavioral;
