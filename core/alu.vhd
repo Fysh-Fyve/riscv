@@ -34,6 +34,8 @@ architecture Behavioral of alu is
   signal right_shifted    : std_ulogic_vector (31 downto 0);
   signal unsigned_shift_a : std_ulogic_vector (31 downto 0);
   signal signed_shift_a   : std_ulogic_vector (31 downto 0);
+  signal lt_unsigned_flag : std_ulogic;
+  signal lt_signed_flag   : std_ulogic;
 
   -- converts a std_ulogic to a std_ulogic_vector (32 bits)
   function int_from_bit(x : std_ulogic) return std_ulogic_vector is
@@ -75,14 +77,14 @@ begin
     operand_a_i or operand_b_i              when OP_OR,
     right_shifted                           when OP_SHIFT_RIGHT,
     operand_a_i xor operand_b_i             when OP_XOR,
-    int_from_bit(less_than_unsigned_flag_o) when OP_LESS_THAN_UNSIGNED,
-    int_from_bit(less_than_flag_o)          when OP_LESS_THAN,
+    int_from_bit(lt_unsigned_flag)          when OP_LESS_THAN_UNSIGNED,
+    int_from_bit(lt_signed_flag)            when OP_LESS_THAN,
     left_shifted                            when OP_SHIFT_LEFT,
     std_ulogic_vector(add_sub_result)       when OP_ADD_SUB,
     (others => 'X')                         when others;
 
   add_sub_result <= (signed(operand_a_i) - signed(operand_b_i))
-                    when sub_sra_i
+                    when sub_sra_i -- expects boolen, not std_ulogic. is there a reason you used std_ulogic?
                     else (signed(operand_a_i) + signed(operand_b_i));
 
   left_shifted <= std_ulogic_vector(
@@ -91,7 +93,7 @@ begin
       to_integer(unsigned(operand_b_i(4 downto 0)))));
 
   right_shifted <= signed_shift_a
-                   when sub_sra_i
+                   when sub_sra_i -- expects boolen, not std_ulogic. is there a reason you used std_ulogic?
                    else unsigned_shift_a;
 
   unsigned_shift_a <= std_ulogic_vector(
@@ -105,7 +107,9 @@ begin
       to_integer(unsigned(operand_b_i(4 downto 0)))));
 
   -- set flags
-  equal_flag_o              <= and (operand_a_i xnor operand_b_i);
-  less_than_flag_o          <= less_than_signed(operand_a_i, operand_b_i);
-  less_than_unsigned_flag_o <= less_than_unsigned(operand_a_i, operand_b_i);
+  equal_flag_o              <= '1' when operand_a_i = operand_b_i else '0';
+  lt_unsigned_flag          <= less_than_unsigned(operand_a_i, operand_b_i);
+  lt_signed_flag            <= less_than_signed(operand_a_i, operand_b_i);
+  less_than_flag_o          <= lt_signed_flag;
+  less_than_unsigned_flag_o <= lt_unsigned_flag;
 end Behavioral;
