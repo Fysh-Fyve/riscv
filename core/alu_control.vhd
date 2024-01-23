@@ -12,18 +12,18 @@ entity alu_control is
   port (
     clk_i           : in std_ulogic; --! Clock signal.
     instruction_i   : in std_ulogic_vector (31 downto 0); --! Instruction to be executed.
-    reg_val_1_i : in std_ulogic_vector (31 downto 0); --! Value from first selected register
-    reg_val_2_i : in std_ulogic_vector (31 downto 0); --! Value from second selected register
+    reg_val_1_i : in std_ulogic_vector (31 downto 0);     --! Value from first selected register
+    reg_val_2_i : in std_ulogic_vector (31 downto 0);     --! Value from second selected register
 
     rd_clk_o  : out std_ulogic; --! register file clock signal 
     mem_clk_o : out std_ulogic; --! memory clock signal
     ir_clk_o  : out std_ulogic; --! instruction register clock signal
 
-    alu_o           : out std_ulogic_vector (31 downto 0); --! ALU output .
-    pc_o            : out std_ulogic_vector (31 downto 0); --! Program Counter output.
-    pc_alu_result_o : out std_ulogic_vector (31 downto 0); --! Program Counter's ALU output.
+    alu_o           : out std_ulogic_vector (31 downto 0); --! ALU output
+    pc_o            : out std_ulogic_vector (31 downto 0); --! Program Counter output
+    pc_alu_result_o : out std_ulogic_vector (31 downto 0); --! Program Counter's ALU output
 
-    reset_o    : out std_ulogic; --! Reset signal.
+    reset_o    : out std_ulogic; --! Reset signal
     addr_sel_o : out std_ulogic; --! ALU & PC address select signal
     rd_sel_o   : out std_ulogic_vector (1 downto 0); --! Register File write select 
     sx_size_o  : out std_ulogic_vector (2 downto 0)); --! Memory fetch size 

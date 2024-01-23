@@ -16,9 +16,9 @@ entity control_fsm is
     ltu_i                   : in std_ulogic; --! Unsigned less than flag (A < B (unsigned)).
     opcode_i                : in std_ulogic_vector (6 downto 0);
     op_bits_i               : in std_ulogic_vector (2 downto 0);
-    sub_sra_i : in std_ulogic; sub_sra_o
+    sub_sra_i               : in std_ulogic; -- subtract or shift right arithmetic flag (0 = add, logical shift right; 1 = subtract, arithmetic shift right).
 
-    sub_sra_o                 : out std_ulogic;
+    sub_sra_o                               : out std_ulogic;
     op_bits_o, sx_size_o                    : out std_ulogic_vector (2 downto 0);
     addr_sel_o, alu_a_sel_o, alu_b_sel_o    : out std_ulogic;
     rd_sel_o                                : out std_ulogic_vector (1 downto 0);
