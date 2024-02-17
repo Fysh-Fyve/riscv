@@ -1,0 +1,58 @@
+diff --git a/Makefile b/Makefile
+index 12e370b..395dbf4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -26,6 +26,8 @@ wave:
+ clean:
+ 	rm -fv **/*~
+ 
++rom: rtl/core/rom_pkg.vhd
++
+ rtl/core/rom_pkg.vhd: scripts/asm/main.go \
+ 	scripts/rom/main.go \
+ 	scripts/rom/rom_pkg.part1.vhd \
+@@ -102,4 +104,4 @@ $(VIVADO_PROJECT_FILE):
+ clean-project:
+ 	rm -rf $(VIVADO_PROJECT_DIR)
+ 
+-.PHONY: clean fmt test tcl clean-project
++.PHONY: clean fmt test tcl clean-project rom
+diff --git a/rtl/core/control_fsm.vhd b/rtl/core/control_fsm.vhd
+index b03b662..da22c24 100644
+--- a/rtl/core/control_fsm.vhd
++++ b/rtl/core/control_fsm.vhd
+@@ -106,7 +106,7 @@ begin
+   pc_next_sel_o <= mux_sels(2);
+   rd_sel_o      <= mux_sels(1 downto 0);
+ 
+-  drive_clock : process(clk_i, opcode_i, pc_clk, ir_clk, mem_write_en)
++  drive_clock : process(clk_i, reset_i, opcode_i, pc_clk, ir_clk, mem_write_en)
+     use std.textio.all;
+     variable l : line;
+   begin
+diff --git a/rtl/core/phy_map.vhd b/rtl/core/phy_map.vhd
+index affd0ec..47bbb6a 100644
+--- a/rtl/core/phy_map.vhd
++++ b/rtl/core/phy_map.vhd
+@@ -63,7 +63,7 @@ begin
+   gpio_addr_start <= '1' when (waddr_i = x"DEADBEEC") else '0';
+   gpio_write_en   <= write_en_i and gpio_addr_start;
+ 
+-  gpio_clk : process(clk_i)
++  gpio_clk : process(clk_i, gpio)
+   begin
+     if rising_edge(clk_i) then
+       if gpio_write_en = '1' then
+diff --git a/rtl/core/register_file.vhd b/rtl/core/register_file.vhd
+index 19ca8d0..3f6e614 100644
+--- a/rtl/core/register_file.vhd
++++ b/rtl/core/register_file.vhd
+@@ -54,7 +54,7 @@ begin
+   reg_file(0) <= (others => '0');
+ 
+   -- Async! hell yeah I am not sure if this works
+-  register_read : process(reg_sel_1_i, reg_sel_2_i, rd_clk_i)
++  register_read : process(reg_sel_1_i, reg_sel_2_i, rd_clk_i, reg_file)
+   begin
+     reg_val_1_o <= reg_file(to_integer(unsigned(reg_sel_1_i)));
+     reg_val_2_o <= reg_file(to_integer(unsigned(reg_sel_2_i)));
