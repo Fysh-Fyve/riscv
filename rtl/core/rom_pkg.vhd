@@ -10,12 +10,12 @@ use work.fysh_fyve.all;
 package rom is
   constant rom_arr : mem_t (0 to ROM_NUM_WORDS-1) := (
     x"37210100",
-    x"ef00401b",
+    x"ef008019",
     x"63000000",
     x"6b050000",
     x"67800000",
     x"b7050000",
-    x"83a5852e",
+    x"83a5c52c",
     x"83a50500",
     x"33d5a500",
     x"13751500",
@@ -25,31 +25,31 @@ package rom is
     x"23248100",
     x"23229100",
     x"b7040000",
-    x"03a5c42e",
+    x"03a5042d",
     x"b7150100",
     x"1384d5dc",
     x"93050400",
     x"ef00c00e",
     x"33058500",
-    x"23a6a42e",
+    x"23a8a42c",
     x"8320c100",
     x"03248100",
     x"83244100",
     x"13010101",
     x"67800000",
     x"b7050000",
-    x"23a6a52e",
+    x"23a8a52c",
     x"67800000",
     x"37050000",
-    x"0325852e",
+    x"0325c52c",
     x"03250500",
     x"67800000",
     x"b7050000",
-    x"83a5852e",
+    x"83a5c52c",
     x"23a0a500",
     x"67800000",
     x"37060000",
-    x"0326462e",
+    x"0326862c",
     x"83260600",
     x"13071000",
     x"3315a700",
@@ -62,7 +62,7 @@ package rom is
     x"2320a600",
     x"67800000",
     x"37060000",
-    x"0326862e",
+    x"0326c62c",
     x"83260600",
     x"13071000",
     x"3315a700",
@@ -75,14 +75,14 @@ package rom is
     x"2320a600",
     x"67800000",
     x"37050000",
-    x"0325052e",
+    x"0325452c",
     x"03250500",
     x"67800000",
     x"9305f000",
     x"63eea500",
     x"13152500",
     x"b7050000",
-    x"93854525",
+    x"93858523",
     x"3385a500",
     x"03250500",
     x"67800000",
@@ -102,61 +102,54 @@ package rom is
     x"130101ff",
     x"23261100",
     x"23248100",
-    x"23229100",
-    x"13840500",
-    x"93040500",
-    x"eff0dfef",
-    x"137505f0",
-    x"93943400",
-    x"33649400",
-    x"3365a400",
+    x"13153500",
+    x"33e5a500",
     x"13640508",
     x"13050400",
-    x"eff01fef",
+    x"eff09ff0",
     x"13050400",
     x"8320c100",
     x"03248100",
-    x"83244100",
     x"13010101",
     x"67800000",
     x"130101ff",
     x"23261100",
     x"13058001",
     x"93050000",
-    x"eff05fed",
+    x"eff01fef",
     x"13059001",
     x"93050000",
-    x"eff09fec",
+    x"eff05fee",
     x"1305a001",
     x"93050000",
-    x"eff0dfeb",
+    x"eff09fed",
     x"1305b001",
     x"93050000",
-    x"eff01feb",
+    x"eff0dfec",
     x"13050000",
     x"93050000",
-    x"eff01ff7",
+    x"eff0dff8",
     x"93052000",
     x"13050000",
-    x"eff05ff6",
+    x"eff01ff8",
     x"93053000",
     x"13050000",
-    x"eff09ff5",
+    x"eff05ff7",
     x"13051000",
     x"93051000",
-    x"eff0dff4",
+    x"eff09ff6",
     x"13051000",
     x"93054000",
-    x"eff01ff4",
+    x"eff0dff5",
     x"13052000",
     x"93050000",
-    x"eff05ff3",
+    x"eff01ff5",
     x"13052000",
     x"93052000",
-    x"eff09ff2",
+    x"eff05ff4",
     x"13052000",
     x"93053000",
-    x"eff0dff1",
+    x"eff09ff3",
     x"6ff01ffa",
     x"3f000000",
     x"06000000",
@@ -181,11 +174,11 @@ package rom is
     x"1b0c0200",
     x"18000000",
     x"18000000",
-    x"b8feffff",
-    x"50000000",
+    x"d4feffff",
+    x"34000000",
     x"00440e10",
-    x"4c810188",
-    x"02890300",
+    x"48810188",
+    x"02000000",
     x"14000000",
     x"34000000",
     x"ecfeffff",
@@ -200,98 +193,6 @@ package rom is
     );
 end package rom;
 --! From binary file fysh/simple-matrix.hex
---! 	.text
---! 	.attribute	4, 16
---! 	.attribute	5, "rv32i2p1"
---! 	.file	"simple-matrix.fysh"
---! 	.globl	pixel                           # -- Begin function pixel
---! 	.p2align	2
---! 	.type	pixel,@function
---! pixel:                                  # @pixel
---! 	.cfi_startproc
---! # %bb.0:                                # %entry
---! 	addi	sp, sp, -16
---! 	.cfi_def_cfa_offset 16
---! 	sw	ra, 12(sp)                      # 4-byte Folded Spill
---! 	sw	s0, 8(sp)                       # 4-byte Folded Spill
---! 	sw	s1, 4(sp)                       # 4-byte Folded Spill
---! 	.cfi_offset ra, -4
---! 	.cfi_offset s0, -8
---! 	.cfi_offset s1, -12
---! 	mv	s0, a1
---! 	mv	s1, a0
---! 	call	fysh_gpio_read_all
---! 	andi	a0, a0, -256
---! 	slli	s1, s1, 3
---! 	or	s0, s0, s1
---! 	or	a0, s0, a0
---! 	ori	s0, a0, 128
---! 	mv	a0, s0
---! 	call	fysh_gpio_write_all
---! 	mv	a0, s0
---! 	lw	ra, 12(sp)                      # 4-byte Folded Reload
---! 	lw	s0, 8(sp)                       # 4-byte Folded Reload
---! 	lw	s1, 4(sp)                       # 4-byte Folded Reload
---! 	addi	sp, sp, 16
---! 	ret
---! .Lfunc_end0:
---! 	.size	pixel, .Lfunc_end0-pixel
---! 	.cfi_endproc
---!                                         # -- End function
---! 	.globl	main                            # -- Begin function main
---! 	.p2align	2
---! 	.type	main,@function
---! main:                                   # @main
---! 	.cfi_startproc
---! # %bb.0:                                # %entry
---! 	addi	sp, sp, -16
---! 	.cfi_def_cfa_offset 16
---! 	sw	ra, 12(sp)                      # 4-byte Folded Spill
---! 	.cfi_offset ra, -4
---! 	li	a0, 24
---! 	li	a1, 0
---! 	call	pin_mode
---! 	li	a0, 25
---! 	li	a1, 0
---! 	call	pin_mode
---! 	li	a0, 26
---! 	li	a1, 0
---! 	call	pin_mode
---! 	li	a0, 27
---! 	li	a1, 0
---! 	call	pin_mode
---! .LBB1_1:                                # %loop_cond
---!                                         # =>This Inner Loop Header: Depth=1
---! 	li	a0, 0
---! 	li	a1, 0
---! 	call	pixel
---! 	li	a1, 2
---! 	li	a0, 0
---! 	call	pixel
---! 	li	a1, 3
---! 	li	a0, 0
---! 	call	pixel
---! 	li	a0, 1
---! 	li	a1, 1
---! 	call	pixel
---! 	li	a0, 1
---! 	li	a1, 4
---! 	call	pixel
---! 	li	a0, 2
---! 	li	a1, 0
---! 	call	pixel
---! 	li	a0, 2
---! 	li	a1, 2
---! 	call	pixel
---! 	li	a0, 2
---! 	li	a1, 3
---! 	call	pixel
---! 	j	.LBB1_1
---! .Lfunc_end1:
---! 	.size	main, .Lfunc_end1-main
---! 	.cfi_endproc
---!                                         # -- End function
---! 	.section	".note.GNU-stack","",@progbits
 --! ></*>
 --! Simple 8x8 matrix!
 --! C1 - JE1 - gpio[24]
@@ -329,12 +230,7 @@ end package rom;
 --! 
 --! >(pixel) ><row> ><col>
 --! ><>
---!    o+) ><gpio> ~
---!    (+o (><gpio> &
---!          (<°}>< << ><{{{°>) ></*> keep everything in GPIO
---!                                   the same but the first 7 bits <*/><
---!         ) |
---!         (><{°> << ><{{{°>) | ><//> Output enable
+--!    (+o (><{°> << ><{{{°>) | ><//> Output enable
 --!         (><row> << ><{{°>) | ><//> Row is next higher 3 bits
 --!         ><col> ~ ><//> Col is first 3 bits
 --! <><
