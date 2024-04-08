@@ -35,14 +35,26 @@ x x x x x x x x
 
 >(pixel) ><row> ><col>
 ><>
-   o+) ><gpio> ~
-   (+o (><gpio> &
-         (<°}>< << ><{{{°>) ></*> keep everything in GPIO
-                                  the same but the first 7 bits <*/><
-        ) |
-        (><{°> << ><{{{°>) | ><//> Output enable
-        (><row> << ><{{°>) | ><//> Row is next higher 3 bits
-        ><col> ~ ><//> Col is first 3 bits
+   (+o (><{°> << ><{{{°>) | ><//> Output enable
+        ((><row> & ><{{{°>) << ><{{°>) | ><//> Row is next higher 3 bits
+        (><col> & ><{{{°>) ~ ><//> Col is first 3 bits
+<><
+
+>(draw) ><dx> ><dy>
+><>
+   ><count> = ><{{{{{({(((°> ~
+   ><(((@> [><count> o~ ><(°>]
+   ><>
+      [ (><dx> ><((°>) >(pixel) (><dy> ><(((°>) ] ~
+      [ (><dx> ><((°>) >(pixel) (><dy> ><({(°>) ] ~
+      [ (><dx> ><((°>) >(pixel) (><dy> ><({{°>) ] ~
+      [ (><dx> ><({°>) >(pixel) (><dy> ><(({°>) ] ~
+      [ (><dx> ><({°>) >(pixel) (><dy> ><{((°>) ] ~
+      [ (><dx> ><{(°>) >(pixel) (><dy> ><(((°>) ] ~
+      [ (><dx> ><{(°>) >(pixel) (><dy> ><({(°>) ] ~
+      [ (><dx> ><{(°>) >(pixel) (><dy> ><({{°>) ] ~
+      <count><< ~
+   <><
 <><
 
 ><//> It's little endian somehow so we gotta start at 24
@@ -54,16 +66,13 @@ x x x x x x x x
 
 ><//> TODO: Buttons
 
+><x> ~
+><y> ~
+
 ><(((@> [><{°>]
 ><>
-   [><(°>  >(pixel)  ><(°>  ] ~
-   [><(°>  >(pixel)  ><{(°> ] ~
-   [><(°>  >(pixel)  ><{{°> ] ~
-   [><{°>  >(pixel)  ><{°>  ] ~
-   [><{°>  >(pixel)  ><{((°>] ~
-   [><{(°> >(pixel)  ><(°>  ] ~
-   [><{(°> >(pixel)  ><{(°> ] ~
-   [><{(°> >(pixel)  ><{{°> ] ~
+   [><x> >(draw) ><y>] ~
+   ><x> = (><x> ><{°>) & ><{{{°> ~
 <><
 
 ><//> we're just being nice to LLVM
