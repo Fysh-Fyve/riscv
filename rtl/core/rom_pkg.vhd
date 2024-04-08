@@ -139,7 +139,7 @@ package rom is
     x"37090000",
     x"232e0936",
     x"b7090000",
-    x"13050040",
+    x"13050004",
     x"23a0a938",
     x"6f00c000",
     x"13051500",
@@ -302,7 +302,7 @@ end package rom;
 --! 	lui	s2, %hi(.Lcount)
 --! 	sw	zero, %lo(.Lcount)(s2)
 --! 	lui	s3, %hi(.Lcount_lim)
---! 	li	a0, 1024
+--! 	li	a0, 64
 --! 	sw	a0, %lo(.Lcount_lim)(s3)
 --! 	j	.LBB1_2
 --! .LBB1_1:                                # %if_exit
@@ -441,7 +441,7 @@ end package rom;
 --! ><x> = ><(°> ~
 --! ><y> = ><(°> ~
 --! ><count> = ><(°> ~
---! ><count_lim> = ><{((((((((((°> ~
+--! ><count_lim> = ><{((((((°> ~
 --! 
 --! ><(((@> [><{°>] ><//> 1
 --! ><>
