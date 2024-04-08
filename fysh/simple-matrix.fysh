@@ -57,7 +57,7 @@ x x x x x x x x
 ><y> = ><(°> ~
 ><count> = ><(°> ~
 
->(wait increment) ><count_lim> 
+>(wait_increment) ><count_lim>
 ><>
    ><(((^> [><count> o≈ ><count_lim>]
    ><>
@@ -78,8 +78,7 @@ x x x x x x x x
    [><x> ><{(°> >(pixel)  ><y>        ] ~ ><//> 2 0
    [><x> ><{(°> >(pixel)  ><y> ><{(°> ] ~ ><//> 2 2
    [><x> ><{(°> >(pixel)  ><y> ><{{°> ] ~ ><//> 2 3
-   [>(wait increment) ><{((((((((((°> ] ~ ><//> 1024
-   
+   [>(wait_increment) ><{((((((((((°> ] ~ ><//> 1024
 <><
 
 

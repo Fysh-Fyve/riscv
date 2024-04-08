@@ -6,7 +6,7 @@ vivado*.jou
 vivado*.log
 .Xil
 # Auto-generated!
-rtl/core/rom_pkg.vhd
+!rtl/core/rom_pkg.vhd
 wave.ghw
 build/*
 !build/.keep
