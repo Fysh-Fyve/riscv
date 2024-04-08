@@ -35,14 +35,9 @@ x x x x x x x x
 
 >(pixel) ><row> ><col>
 ><>
-   o+) ><gpio> ~
-   (+o (><gpio> &
-         (<°}>< << ><{{{°>) ></*> keep everything in GPIO
-                                  the same but the first 7 bits <*/><
-        ) |
-        (><{°> << ><{{{°>) | ><//> Output enable
-        (><row> << ><{{°>) | ><//> Row is next higher 3 bits
-        ><col> ~ ><//> Col is first 3 bits
+   (+o  (><{°> << ><{{{°>) | ><//> Output enable
+        ((><row> & ><{{{°>) << ><{{°>) | ><//> Row is next higher 3 bits
+        (><col> & ><{{{°>) ~ ><//> Col is first 3 bits
 <><
 
 ><//> It's little endian somehow so we gotta start at 24
@@ -56,17 +51,7 @@ x x x x x x x x
 ><x> = ><(°> ~
 ><y> = ><(°> ~
 ><count> = ><(°> ~
-
->(wait_increment) ><count_lim>
-><>
-   ><(((^> [><count> o≈ ><count_lim>]
-   ><>
-      ><x> = (><x> ><{°>) & ><{{{°> ~ ><//> x = (x + 1) & 7 (reset to 0 if 8)
-      ><count> = ><(°> ~
-   <><
-   >><count> ~
-
-<><
+><count_lim> = ><{((((((((((°> ~
 
 ><(((@> [><{°>] ><//> 1
 ><>
@@ -78,7 +63,14 @@ x x x x x x x x
    [><x> ><{(°> >(pixel)  ><y>        ] ~ ><//> 2 0
    [><x> ><{(°> >(pixel)  ><y> ><{(°> ] ~ ><//> 2 2
    [><x> ><{(°> >(pixel)  ><y> ><{{°> ] ~ ><//> 2 3
-   [>(wait_increment) ><{((((((((((°> ] ~ ><//> 1024
+   ><//> [>(wait increment) ><{((((((((((°> ] ~ ><//> 1024
+
+   ><(((^> [><count> o≈ ><count_lim>]
+   ><>
+      ><x> = (><x> ><{°>) & ><{{{°> ~ ><//> x = (x + 1) & 7 (reset to 0 if 8)
+      ><count> = ><(°> ~
+   <><
+   >><count> ~
 <><
 
 
