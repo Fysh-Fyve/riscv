@@ -1,4 +1,4 @@
-We have moved! [Fysh-Fyve/fysh](https://github.com/fysh-Fyve/fysh/tree/master/pkg/riscv)
+We have moved! [Fysh-Fyve/fysh](https://github.com/fysh-Fyve/fysh)
 
 # ECE 492 RISC-V Project
 
